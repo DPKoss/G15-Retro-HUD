@@ -1,0 +1,16 @@
+# Fichiers locaux générés automatiquement par G15 HUD
+config.toml
+g15_keymap.json
+
+# Cache Python & environnements virtuels
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Fichiers système & éditeurs
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
