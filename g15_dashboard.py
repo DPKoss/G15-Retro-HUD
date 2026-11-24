@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Logitech G15 v2 / v1 Autonomous Dashboard (Windows 11 x64 — Zéro driver LGS/GHUB)
-Version 2.0 — Monolithe Python autonome (voir README.md pour le guide complet).
+Version 0.2.0 — Monolithe Python autonome (voir README.md pour le guide complet).
 """
 
 import asyncio
@@ -92,7 +92,7 @@ DEFAULT_G15V2_KEYMAP = {
 }
 
 DEFAULT_CONFIG_TOML = """# ==============================================================================
-# Configuration G15 HUD v2.0 (éditable à chaud -> Tray : "Recharger config.toml")
+# Configuration G15-Retro-HUD v0.2.0 (éditable à chaud -> Tray : "Recharger config.toml")
 # ==============================================================================
 
 [general]
@@ -1148,7 +1148,7 @@ class TelemetryHub:
     # --- Boucle WAN IP, Géolocalisation IP & Prévisions Open-Meteo (7j + 24h) ---
     @staticmethod
     def _http_json(url: str, timeout: float = 4.5) -> dict:
-        req = urllib.request.Request(url, headers={"User-Agent": "G15-HUD/2.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "G15-HUD/0.2.0"})
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8", errors="replace"))
 
@@ -2865,7 +2865,7 @@ def create_tray_icon(app: G15App):
         pystray.MenuItem("Recalibrer les boutons", lambda icon, item: app.hw.start_calibration()),
         pystray.MenuItem("Quitter G15 HUD", app.stop),
     )
-    return pystray.Icon("g15_hud", ico, "Logitech G15 v2 HUD v2.0", menu)
+    return pystray.Icon("g15_hud", ico, "G15-Retro-HUD v0.2.0", menu)
 
 
 if __name__ == "__main__":

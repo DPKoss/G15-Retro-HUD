@@ -17,7 +17,7 @@
 
 ## À propos
 
-En ressortant mon vieux **G15** vieux de près de 20 ans, j'ai voulu rallumer son LCD sous Windows 11 sans installer d'anciens pilotes noyau qui imposent de désactiver l'Isolation du noyau (HVCI). Le projet a d'abord été *vibe-codé* et utilisé en local sur plusieurs itérations avant d'être nettoyé et publié tel quel en **v2.0** sous la forme d'un script unique (`g15_dashboard.py`).
+En ressortant mon vieux **G15** vieux de près de 20 ans, j'ai voulu rallumer son LCD sous Windows 11 sans installer d'anciens pilotes noyau qui imposent de désactiver l'Isolation du noyau (HVCI). Le projet a d'abord été *vibe-codé* et utilisé en local sur plusieurs itérations avant d'être nettoyé et publié tel quel en **v0.2.0** sous la forme d'un script unique (`g15_dashboard.py`).
 
 En bref, comment ça tourne :
 * **USB Raw HID direct :** compatible **G15 v2** (`046d:c227`, ambré) et **G15 v1** (`046d:c222`, bleu), avec reconnexion automatique toutes les 2 s (sortie de veille ou dock USB).
@@ -95,7 +95,7 @@ Au premier lancement, deux fichiers locaux (ignorés par Git) sont générés :
 Le script n'intègre aucune télémétrie, aucun compte et n'envoie rien à son auteur. Il effectue toutefois trois types d'appels réseau automatiques en arrière-plan :
 
 * **Pings ICMP** toutes les `10 s` (`ping_interval_sec`) vers les 3 hôtes de `config.toml` (`192.168.1.1`, `1.1.1.1`, `8.8.8.8` par défaut).
-* **`https://ipwho.is/`** (repli `https://api.ipify.org`) toutes les `10 min` (`refresh_minutes`, ainsi qu'au changement d'état VPN ou via `PING!` / `MAJ`), avec l'en-tête `User-Agent: G15-HUD/2.0` : expose votre **IP publique** à ce service tiers pour afficher l'IP WAN (écran 6) et déterminer votre ville météo hors VPN (écran 7). *Note : cet appel reste effectué même sous VPN ou avec `auto_detect_ip = false` afin de rafraîchir l'IP publique de l'écran 6, tandis que la météo bascule alors sur la ville de repli définie dans `config.toml`.*
+* **`https://ipwho.is/`** (repli `https://api.ipify.org`) toutes les `10 min` (`refresh_minutes`, ainsi qu'au changement d'état VPN ou via `PING!` / `MAJ`), avec l'en-tête `User-Agent: G15-HUD/0.2.0` : expose votre **IP publique** à ce service tiers pour afficher l'IP WAN (écran 6) et déterminer votre ville météo hors VPN (écran 7). *Note : cet appel reste effectué même sous VPN ou avec `auto_detect_ip = false` afin de rafraîchir l'IP publique de l'écran 6, tandis que la météo bascule alors sur la ville de repli définie dans `config.toml`.*
 * **`https://api.open-meteo.com/v1/forecast`** toutes les `10 min` avec uniquement des coordonnées latitude/longitude (issues de la géo-IP hors VPN, ou de `fallback_lat`/`fallback_lon` sous VPN ou si `auto_detect_ip = false`).
 
 ---
