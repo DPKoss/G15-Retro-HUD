@@ -5,9 +5,9 @@
 ![USB Raw HID](https://img.shields.io/badge/USB-Raw%20HID%20(Zero%20Driver)-FF8C00)
 ![License MIT](https://img.shields.io/badge/License-MIT-2ea44f)
 
-**Dashboard autonome en espace utilisateur pour redonner vie à l'écran LCD monochrome (`160×43`) des claviers Logitech G15 (v1 & v2) sous Windows 11 — sans aucun pilote propriétaire.**
+**Dashboard autonome en espace utilisateur pour redonner vie à l'écran LCD monochrome (`160×43`) des claviers Logitech G15 (v1 & v2) sous Windows 11, sans aucun pilote propriétaire.**
 
-> **🇬🇧 English TL;DR:** **G15-Retro-HUD** is an independent, user-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD and softkeys on **Windows 11 x64**. No legacy Logitech drivers (LGS / G HUB) are required — Windows 11 Core Isolation / Memory Integrity (HVCI) stays 100% intact. UI and docs are currently in French; English translation is on the roadmap and PRs are very welcome!
+> **🇬🇧 English TL;DR:** **G15-Retro-HUD** is an independent, user-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD and softkeys on **Windows 11 x64**. No legacy Logitech drivers (LGS / G HUB) are required, so Windows 11 Core Isolation / Memory Integrity (HVCI) stays 100% intact. UI and docs are currently in French; English translation is on the roadmap and PRs are very welcome!
 
 ![Aperçu de G15-Retro-HUD sur un clavier G15](assets/preview.jpg)
 
@@ -15,16 +15,16 @@
 
 ## Pourquoi ce projet ?
 
-En retombant sur mon vieux clavier **G15** qui approche doucement de ses 20 ans, j'ai eu envie — par pure nostalgie — de rallumer son petit écran LCD sous Windows 11 sans installer d'anciens pilotes noyau obsolètes qui obligent à désactiver la sécurité de Windows.
+En retombant sur mon vieux clavier **G15** qui approche doucement de ses 20 ans, j'ai eu envie, par pure nostalgie, de rallumer son petit écran LCD sous Windows 11 sans installer d'anciens pilotes noyau obsolètes qui obligent à désactiver la sécurité de Windows.
 
-Ce dashboard a été *vibe-codé* avec plaisir sous la forme d'un script Python unique, lisible et autonome (`g15_dashboard.py`). C'est un projet très humble : si vous avez encore un G15 sur votre bureau ou au fond d'un placard, j'espère qu'il vous servira autant qu'à moi. **Le projet est ouvert à tous** — retours, idées, correctifs et nouvelles démos 1-bit sont les bienvenus !
+Ce dashboard a été *vibe-codé* avec plaisir sous la forme d'un script Python unique, lisible et autonome (`g15_dashboard.py`). C'est un projet très humble : si vous avez encore un G15 sur votre bureau ou au fond d'un placard, j'espère qu'il vous servira autant qu'à moi. **Le projet est ouvert à tous** : retours, idées, correctifs et nouvelles démos 1-bit sont les bienvenus !
 
 ---
 
 ## Points forts techniques
 
 * **Zéro pilote propriétaire (HVCI intact) :** communication directe en espace utilisateur via **USB Raw HID** avec l'écran GamePanel (`160×43` pixels, 1-bit) et les 5 boutons sous l'écran des claviers **G15 v2** (`046d:c227`, ambré) et **G15 v1** (`046d:c222`, bleu). Aucun pilote `.sys` en *ring 0* : l'Isolation du noyau / Intégrité de la mémoire de Windows 11 reste 100 % active.
-* **Zéro dépendance cachée pour le GPU et le réseau :** `nvml.dll` (charge %, VRAM et température des GPU NVIDIA), `iphlpapi.dll` (table de routage Windows / détection automatique de tunnel VPN) et `user32.dll` sont appelées directement via `ctypes` en bibliothèque standard — inutile d'installer `pynvml` ou `pywin32`, et aucun sous-processus PowerShell n'est lancé sur un PC équipé d'un GPU NVIDIA (bascule automatique sur les compteurs WMI iGPU sur ultraportable / Surface).
+* **Zéro dépendance cachée pour le GPU et le réseau :** `nvml.dll` (charge %, VRAM et température des GPU NVIDIA), `iphlpapi.dll` (table de routage Windows / détection automatique de tunnel VPN) et `user32.dll` sont appelées directement via `ctypes` en bibliothèque standard : inutile d'installer `pynvml` ou `pywin32`, et aucun sous-processus PowerShell n'est lancé sur un PC équipé d'un GPU NVIDIA (bascule automatique sur les compteurs WMI iGPU sur ultraportable / Surface).
 * **Dégradation gracieuse :** seuls `hidapi`, `psutil` et `pillow` sont obligatoires. La capture audio WASAPI, les métadonnées média Windows et l'icône System Tray restent optionnelles.
 * **Rendu 1-bit net & Hot-plug USB :** rendu Pillow strict sans antialiasing (`fontmode = "1"`) avec la police système `Tahoma` 9 px pour conserver des accents français nets au pixel près, et reconnexion USB automatique toutes les 2 secondes (sortie de veille ou débranchement de dock).
 
@@ -100,12 +100,12 @@ Au premier lancement, le script crée automatiquement deux fichiers locaux (igno
 
 | # | Écran | Contenu affiché | Boutons `[1]` `[2]` `[3]` `[4]` |
 | :-: | :--- | :--- | :--- |
-| **1** | **Horloge** | Heure grand format, date, charge CPU ou batterie, uptime Windows | `12/24` · `SEC` · `UPT/DATE` · `—` |
+| **1** | **Horloge** | Heure grand format, date, charge CPU ou batterie, uptime Windows | `12/24` · `SEC` · `UPT/DATE` · `-` |
 | **2** | **Chrono / Minuteur** | Chronomètre au 1/10e avec tours ou minuteur avec alerte flash inversée | `START/PAUSE` · `TOUR/DURÉE` · `RESET` · `MODE` |
 | **3** | **Monitoring** | Jauges CPU / RAM / GPU (ou Batterie), historique, jusqu'à 64 threads, °C NVIDIA | `VUE` · `CORES` · `BAT/GPU` · `PICS` |
 | **4** | **Média & Visu** | Titre/Artiste/App (Spotify, navigateur, VLC…), seek temporel, spectre live & **4 visualiseurs plein écran** (Spectre Winamp, Oscillo WMP, Tunnel Basses, Double VU-mètre L/R) | `-15s` · `+30s` · `SPECTR` · `VISU` *(puis navigation plein écran)* |
 | **5** | **Réseau** | Oscilloscope Download/Upload de la carte physique active (sans double comptage VPN/WSL) + Go cumulés | `PAUSE` · `UNITÉ` · `RAZ` · `Total Go` |
-| **6** | **Serveurs & VPN** | Pings ICMP sur 3 hôtes configurables, IP locale, IP publique et badge `[VPN]` auto | `IP LOC / SERV` · `—` · `—` · `PING!` |
+| **6** | **Serveurs & VPN** | Pings ICMP sur 3 hôtes configurables, IP locale, IP publique et badge `[VPN]` auto | `IP LOC / SERV` · `-` · `-` · `PING!` |
 | **7** | **Météo** | Géo-IP auto hors VPN (ville de repli sous VPN) via Open-Meteo, sprites pixel-art 16×16, prévisions J+6 et courbe 24h | `< JOUR` · `JOUR >` · `24H / JOURS` · `MAJ` |
 | **8** | **Demoscene & Pong** | **6 démos 1-bit plein écran 160×43** (Hyperespace, Matrix, Plasma Bayer, Doom Fire, Torus 3D, Rotozoomer) + **mini-Pong jouable** à 20 FPS | `< EFF` · `EFF >` · `AUTO` · `PONG` *(maintien `HAUT`/`BAS` dans Pong)* |
 
@@ -117,7 +117,7 @@ Au premier lancement, le script crée automatiquement deux fichiers locaux (igno
 
 Toute aide ou Pull Request est la bienvenue sur ces prochaines étapes :
 
-- [ ] **Touches macros G1–G6 & banques M1–M3/MR :** prise en charge des touches additionnelles et pilotage des LEDs via Feature Reports HID.
+- [ ] **Touches macros G1-G6 & banques M1-M3/MR :** prise en charge des touches additionnelles et pilotage des LEDs via Feature Reports HID.
 - [ ] **Bascule audio dynamique WASAPI :** changement automatique de flux loopback lorsque Windows bascule de sortie audio par défaut (casque, dock, Bluetooth).
 - [ ] **Coupe-micro universel :** indicateur d'état micro (`IAudioEndpointVolume`) et alertes flash prioritaires inter-écrans.
 - [ ] **Traduction anglaise (EN) :** internationalisation de l'interface LCD, de `config.toml` et de la documentation.
@@ -136,8 +136,8 @@ Ce projet est ouvert à toutes et à tous, quel que soit votre niveau :
 
 ## Licence & Clause de non-affiliation (Disclaimer)
 
-Ce projet est distribué sous licence **MIT** — voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Ce projet est distribué sous licence **MIT** (voir le fichier [LICENSE](LICENSE) pour plus de détails).
 
-**FR — Clause de non-affiliation :** `G15-Retro-HUD` est un projet personnel, communautaire et strictement indépendant. Son auteur n'est **pas employé par**, ni affilié à, ni sponsorisé, soutenu ou approuvé par **Logitech International S.A.** ou **Microsoft Corporation**. Aucun code, pilote ou SDK propriétaire Logitech n'est inclus ou distribué dans ce dépôt. *Logitech*, *G15* et *GamePanel* sont des marques commerciales ou des marques déposées de Logitech ; *Windows* est une marque déposée de Microsoft Corporation. Ces noms sont mentionnés uniquement à des fins d'identification et d'interopérabilité matérielle.
+**FR - Clause de non-affiliation :** `G15-Retro-HUD` est un projet personnel, communautaire et strictement indépendant. Son auteur n'est **pas employé par**, ni affilié à, ni sponsorisé, soutenu ou approuvé par **Logitech International S.A.** ou **Microsoft Corporation**. Aucun code, pilote ou SDK propriétaire Logitech n'est inclus ou distribué dans ce dépôt. *Logitech*, *G15* et *GamePanel* sont des marques commerciales ou des marques déposées de Logitech ; *Windows* est une marque déposée de Microsoft Corporation. Ces noms sont mentionnés uniquement à des fins d'identification et d'interopérabilité matérielle.
 
-**EN — Non-Affiliation Disclaimer:** `G15-Retro-HUD` is an independent, hobbyist open-source project. Its author is **not an employee of**, nor affiliated with, endorsed by, or sponsored by **Logitech International S.A.** or **Microsoft Corporation**. No proprietary Logitech code, driver, or SDK is included in this repository. *Logitech*, *G15*, and *GamePanel* are trademarks or registered trademarks of Logitech, used strictly for hardware compatibility identification purposes.
+**EN - Non-Affiliation Disclaimer:** `G15-Retro-HUD` is an independent, hobbyist open-source project. Its author is **not an employee of**, nor affiliated with, endorsed by, or sponsored by **Logitech International S.A.** or **Microsoft Corporation**. No proprietary Logitech code, driver, or SDK is included in this repository. *Logitech*, *G15*, and *GamePanel* are trademarks or registered trademarks of Logitech, used strictly for hardware compatibility identification purposes.
