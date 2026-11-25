@@ -7,7 +7,7 @@
 
 **Dashboard autonome en espace utilisateur pour l'écran LCD monochrome (`160×43`) et les 5 boutons des claviers Logitech G15 (v1 & v2) sous Windows 10/11, sans aucun pilote propriétaire.**
 
-> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 10/11 x64**. Talks directly over USB Raw HID — no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) — **looking for G15 v1 (blue, `046d:c222`) testers!**
+> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 10/11 x64**. Talks directly over USB Raw HID - no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) - **looking for G15 v1 (blue, `046d:c222`) testers!**
 
 [![Aperçu animé de G15-Retro-HUD (cliquer pour la démo complète sur YouTube)](assets/demo.gif)](https://youtu.be/d3aF21h4JUE)
 
@@ -21,7 +21,7 @@ En ressortant mon vieux **G15** vieux de près de 20 ans, j'ai voulu rallumer so
 
 En bref, comment ça tourne :
 * **USB Raw HID direct :** compatible **G15 v2** (`046d:c227`, ambré) et **G15 v1** (`046d:c222`, bleu), avec reconnexion automatique toutes les 2 s (sortie de veille ou dock USB).
-* **Sondes natives Windows :** `nvml.dll` (charge, VRAM, °C NVIDIA), `iphlpapi.dll` (routage et détection VPN) et `user32.dll` sont appelés via `ctypes` — pas besoin de `pynvml` ni `pywin32`, avec bascule WMI iGPU hors NVIDIA.
+* **Sondes natives Windows :** `nvml.dll` (charge, VRAM, °C NVIDIA), `iphlpapi.dll` (routage et détection VPN) et `user32.dll` sont appelés via `ctypes` - pas besoin de `pynvml` ni `pywin32`, avec bascule WMI iGPU hors NVIDIA.
 * **Rendu 1-bit net :** Pillow sans antialiasing (`fontmode = "1"`) en `Tahoma` 9 px pour garder les accents français lisibles pixel par pixel.
 * **Dépendances à la carte :** seuls `hidapi`, `psutil` et `pillow` sont requis ; audio, média Windows et icône System Tray sont optionnels.
 
@@ -29,13 +29,13 @@ En bref, comment ça tourne :
 
 ## Prérequis & Installation
 
-### Option A — Exécutable Windows autonome (sans Python)
+### Option A - Exécutable Windows autonome (sans Python)
 
 Téléchargez **`G15-Retro-HUD-v0.2.0-win64.exe`** depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases) et lancez-le directement (un seul fichier, aucune installation, tourne dans la zone de notification Windows).
 
 > **Reproductibilité :** le binaire est compilé depuis le fichier [`G15-Retro-HUD.spec`](G15-Retro-HUD.spec) public (automatisé par [GitHub Actions](.github/workflows/release.yml) à chaque tag `v*`) et peut être recompilé localement avec `.\build.ps1`. Comme tout binaire PyInstaller `--onefile` non signé, il s'extrait dans `%TEMP%` au démarrage : en cas d'alerte SmartScreen/antivirus, utilisez plutôt l'Option B ci-dessous.
 
-### Option B — Depuis les sources (Python 3.11+)
+### Option B - Depuis les sources (Python 3.11+)
 
 * **Windows 10 / 11 (x64)** et **Python 3.11+** (`tomllib` intégré et requis par les roues `winrt-*`).
 
