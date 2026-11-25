@@ -29,9 +29,9 @@ En bref, comment ça tourne :
 
 ## Prérequis & Installation
 
-### Option A — Version portable Windows (sans Python)
+### Option A — Exécutable Windows autonome (sans Python)
 
-Téléchargez l'archive `G15-Retro-HUD-v0.2.0-win64.zip` depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases), décompressez-la dans un dossier de votre choix et lancez **`G15-Retro-HUD.exe`** (tourne directement dans la zone de notification Windows).
+Téléchargez **`G15-Retro-HUD-v0.2.0-win64.exe`** depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases) et lancez-le directement (un seul fichier, aucune installation, tourne dans la zone de notification Windows).
 
 ### Option B — Depuis les sources (Python 3.11+)
 

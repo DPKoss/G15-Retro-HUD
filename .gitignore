@@ -13,6 +13,7 @@ env/
 build/
 dist/
 *.spec
+*.exe
 G15-Retro-HUD-*.zip
 
 # Fichiers système & éditeurs
