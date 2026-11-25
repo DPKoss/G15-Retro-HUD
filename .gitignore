@@ -9,10 +9,9 @@ __pycache__/
 venv/
 env/
 
-# Packaging PyInstaller
+# Packaging PyInstaller (G15-Retro-HUD.spec est volontairement versionné)
 build/
 dist/
-*.spec
 *.exe
 G15-Retro-HUD-*.zip
 

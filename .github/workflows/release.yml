@@ -1,0 +1,57 @@
+name: Build & Release Windows EXE
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies and PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Build standalone EXE from G15-Retro-HUD.spec
+        run: |
+          python -m PyInstaller --noconfirm --clean G15-Retro-HUD.spec
+
+      - name: Prepare versioned artifact and SHA-256 checksum
+        shell: pwsh
+        run: |
+          $tag = if ($env:GITHUB_REF_TYPE -eq "tag") { $env:GITHUB_REF_NAME } else { "dev" }
+          $outName = "G15-Retro-HUD-$tag-win64.exe"
+          Copy-Item "dist\G15-Retro-HUD.exe" "dist\$outName" -Force
+          $hash = (Get-FileHash "dist\$outName" -Algorithm SHA256).Hash
+          "$hash  $outName" | Out-File -Encoding ascii "dist\SHA256SUMS.txt"
+          Get-Content "dist\SHA256SUMS.txt"
+
+      - name: Upload build artifact (workflow run)
+        uses: actions/upload-artifact@v4
+        with:
+          name: G15-Retro-HUD-win64
+          path: |
+            dist/G15-Retro-HUD-*-win64.exe
+            dist/SHA256SUMS.txt
+
+      - name: Attach binary and checksums to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/G15-Retro-HUD-*-win64.exe
+            dist/SHA256SUMS.txt
