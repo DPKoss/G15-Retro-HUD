@@ -1,129 +1,131 @@
 # G15-Retro-HUD
 
+> **English** | **[Documentation en français](README.fr.md)**
+
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Windows 10 / 11 x64](https://img.shields.io/badge/OS-Windows%2010%20%2F%2011%20x64-0078D6?logo=windows&logoColor=white)
 ![USB Raw HID](https://img.shields.io/badge/USB-Raw%20HID%20(Zero%20Driver)-FF8C00)
 ![License MIT](https://img.shields.io/badge/License-MIT-2ea44f)
 
-**Dashboard autonome en espace utilisateur pour l'écran LCD monochrome (`160×43`) et les 5 boutons des claviers Logitech G15 (v1 & v2) sous Windows 10/11, sans aucun pilote propriétaire.**
+**Standalone user-space dashboard for the monochrome LCD (`160x43`) and 5 buttons on Logitech G15 keyboards (v1 & v2) for Windows 10/11, without any proprietary drivers.**
 
-> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 10/11 x64**. Talks directly over USB Raw HID - no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) - **looking for G15 v1 (blue, `046d:c222`) testers!**
+> **Note (`v0.2.0`):** This README is in English, while the on-screen LCD labels, System Tray menu, and `config.toml` comments are still in French for now (**English UI planned for `v0.3`** - button labels are translated in the table below). **Looking for testers with a blue G15 v1 (`046d:c222`)!**
 
-[![Aperçu animé de G15-Retro-HUD (cliquer pour la démo complète sur YouTube)](assets/demo.gif)](https://youtu.be/d3aF21h4JUE)
+[![Animated preview of G15-Retro-HUD (click for the full demo on YouTube)](assets/demo.gif)](https://youtu.be/d3aF21h4JUE)
 
-> **▶ [Voir le tour complet des 8 écrans sur YouTube (2:33)](https://youtu.be/d3aF21h4JUE)** · *(cliquez sur l'aperçu ci-dessus ou sur le lien)*
-
----
-
-## À propos
-
-En ressortant mon vieux **G15** vieux de près de 20 ans, j'ai voulu rallumer son LCD sous Windows 11 sans installer d'anciens pilotes noyau qui imposent de désactiver l'Isolation du noyau (HVCI). Le projet a d'abord été *vibe-codé* et utilisé en local sur plusieurs itérations avant d'être nettoyé et publié tel quel en **v0.2.0** sous la forme d'un script unique (`g15_dashboard.py`).
-
-En bref, comment ça tourne :
-* **USB Raw HID direct :** compatible **G15 v2** (`046d:c227`, ambré) et **G15 v1** (`046d:c222`, bleu), avec reconnexion automatique toutes les 2 s (sortie de veille ou dock USB).
-* **Sondes natives Windows :** `nvml.dll` (charge, VRAM, °C NVIDIA), `iphlpapi.dll` (routage et détection VPN) et `user32.dll` sont appelés via `ctypes` - pas besoin de `pynvml` ni `pywin32`, avec bascule WMI iGPU hors NVIDIA.
-* **Rendu 1-bit net :** Pillow sans antialiasing (`fontmode = "1"`) en `Tahoma` 9 px pour garder les accents français lisibles pixel par pixel.
-* **Dépendances à la carte :** seuls `hidapi`, `psutil` et `pillow` sont requis ; audio, média Windows et icône System Tray sont optionnels.
+> **[Watch the full 8-screen demo on YouTube (2:33)](https://youtu.be/d3aF21h4JUE)** *(click the GIF above or the link)*
 
 ---
 
-## Prérequis & Installation
+## About
 
-### Option A - Exécutable Windows autonome (sans Python)
+I pulled my ~20-year-old **G15** out of a closet and wanted to get its LCD working again on Windows 11 without installing old kernel drivers that force you to turn off Memory Integrity (HVCI) - especially now that Logitech has removed the old *Logitech Gaming Software (LGS)* installers from its website. The project started out vibe-coded for my own desk setup over several iterations, before being cleaned up and published as **v0.2.0** in a single script (`g15_dashboard.py`).
 
-Téléchargez **`G15-Retro-HUD-v0.2.0-win64.exe`** depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases) et lancez-le directement (un seul fichier, aucune installation, tourne dans la zone de notification Windows).
+How it works in short:
+* **Direct USB Raw HID:** supports **G15 v2** (`046d:c227`, amber) and **G15 v1** (`046d:c222`, blue), with auto-reconnect every 2 s (wake from sleep or USB dock/switch).
+* **Native Windows probes:** calls `nvml.dll` (NVIDIA load, VRAM, temp), `iphlpapi.dll` (routing and VPN check), and `user32.dll` through `ctypes` - no `pynvml` or `pywin32` needed, with a WMI fallback for non-NVIDIA GPUs.
+* **Clean 1-bit rendering:** Pillow with antialiasing disabled (`fontmode = "1"`) in `Tahoma` 9 px so text and accents stay readable pixel by pixel.
+* **Pick-and-choose dependencies:** only `hidapi`, `psutil`, and `pillow` are required; audio capture, Windows media info, and the System Tray icon are optional.
 
-> **Reproductibilité :** le binaire est compilé depuis le fichier [`G15-Retro-HUD.spec`](G15-Retro-HUD.spec) public (automatisé par [GitHub Actions](.github/workflows/release.yml) à chaque tag `v*`) et peut être recompilé localement avec `.\build.ps1`. Comme tout binaire PyInstaller `--onefile` non signé, il s'extrait dans `%TEMP%` au démarrage : en cas d'alerte SmartScreen/antivirus, utilisez plutôt l'Option B ci-dessous.
+---
 
-### Option B - Depuis les sources (Python 3.11+)
+## Requirements & Setup
 
-* **Windows 10 / 11 (x64)** et **Python 3.11+** (`tomllib` intégré et requis par les roues `winrt-*`).
+### Option A - Standalone Windows `.exe` (no Python needed)
+
+Download **`G15-Retro-HUD-v0.2.0-win64.exe`** from [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases) and run it directly (single file, no installer, sits in the Windows System Tray).
+
+> **Reproducibility:** built from [`G15-Retro-HUD.spec`](G15-Retro-HUD.spec) via [GitHub Actions](.github/workflows/release.yml) on each `v*` tag, or locally with `.\build.ps1`. Like any unsigned PyInstaller `--onefile` binary, it unpacks to `%TEMP%` at startup: if SmartScreen or your antivirus complains, just run it from source with Option B below.
+
+### Option B - From source (Python 3.11+)
+
+* **Windows 10 / 11 (x64)** and **Python 3.11+** (uses built-in `tomllib` and `winrt-*` wheels).
 
 > [!WARNING]
-> **Attention sur PyPI (`hidapi` ≠ `hid`) :** installez bien **`hidapi`** et pas le paquet homonyme `hid`, dont l'API est incompatible avec `hid.device()`.
+> **Watch out on PyPI (`hidapi` != `hid`):** install **`hidapi`**, not the `hid` package (different API, won't work with `hid.device()`).
 
 ```bash
 git clone https://github.com/DPKoss/G15-Retro-HUD.git
 cd G15-Retro-HUD
 
-# Installation complète recommandée
+# Full setup (recommended)
 pip install -r requirements.txt
 
-# Ou installation minimale (sans spectre audio, média Windows ni System Tray)
+# Or minimal setup (no audio spectrum, Windows media info, or System Tray)
 pip install hidapi psutil pillow
 ```
 
-| Paquet `pip` | Rôle | Statut |
+| `pip` package | Purpose | Status |
 | :--- | :--- | :--- |
-| `hidapi` | Communication USB Raw HID (`import hid`) | **Obligatoire** |
-| `psutil` | Sondes CPU, RAM, batterie et réseau | **Obligatoire** |
-| `pillow` | Rendu 1-bit `160×43` et polices Windows | **Obligatoire** |
-| `pystray` | Icône et menu dans la zone de notification | Optionnel *(repli console)* |
-| `pyaudiowpatch` | Capture audio WASAPI Loopback | Optionnel *(sans spectre)* |
-| `numpy` | FFT 20 bandes, encodage HID rapide, Demoscene | Optionnel *(repli Python)* |
-| `winrt-runtime`, `winrt-Windows.Foundation`, `winrt-Windows.Media.Control` | Session média Windows GSMTC (titre, artiste, seek) | Optionnel *(écran Média)* |
+| `hidapi` | USB Raw HID communication (`import hid`) | **Required** |
+| `psutil` | CPU, RAM, battery, and network stats | **Required** |
+| `pillow` | `160x43` 1-bit rendering & Windows fonts | **Required** |
+| `pystray` | System Tray icon and right-click menu | Optional *(console fallback)* |
+| `pyaudiowpatch` | WASAPI Loopback audio capture | Optional *(no spectrum)* |
+| `numpy` | 20-band FFT, fast HID packing, Demoscene | Optional *(Python fallback)* |
+| `winrt-runtime`, `winrt-Windows.Foundation`, `winrt-Windows.Media.Control` | Windows GSMTC media session (title, artist, seek) | Optional *(Media screen)* |
 
 ---
 
-## Lancement & Configuration
+## Running & Configuration
 
 ```bash
 python g15_dashboard.py
-# Ou sans fenêtre console (tourne dans le System Tray) :
+# Or without a console window (runs in the System Tray):
 pythonw g15_dashboard.py
 ```
 
-Au premier lancement, deux fichiers locaux (ignorés par Git) sont générés :
-* **`config.toml`** : FPS, priorité Wi-Fi/Ethernet, 3 hôtes à pinger, ville météo de repli sous VPN et délais plein écran. Rechargeable à chaud via clic droit sur le System Tray → **Recharger config.toml**.
-* **`g15_keymap.json`** : mappage des 5 boutons (préconfiguré pour le **G15 v2**). Sur un **G15 v1** (`046d:c222`), utilisez clic droit → **Recalibrer les boutons** et suivez le LCD.
+Two local files (ignored by Git) are created on first run:
+* **`config.toml`**: FPS, Wi-Fi/Ethernet priority, 3 ping hosts, fallback weather city when on VPN, and fullscreen hide delays. Can be reloaded live via right-click on the System Tray icon -> **Recharger config.toml** *(Reload config.toml)*.
+* **`g15_keymap.json`**: 5-button layout (preconfigured for the **G15 v2**). On a **G15 v1** (`046d:c222`), right-click the System Tray icon -> **Recalibrer les boutons** *(Recalibrate buttons)* and follow the LCD prompts.
 
 ---
 
-## Les 8 écrans & Boutons
+## The 8 Screens & Buttons
 
-* **Bouton rond (Applet) :** appui court = écran suivant (`1/8` → `8/8`) · appui long (> 0,9 s) = veille / réveil du LCD.
+* **Round button (Applet):** short press = next screen (`1/8` -> `8/8`) | long press (> 0.9 s) = LCD sleep / wake.
 
-| # | Écran | Contenu | Boutons `[1]` `[2]` `[3]` `[4]` |
+| # | Screen | Content | Buttons `[1]` `[2]` `[3]` `[4]` *(FR -> EN)* |
 | :-: | :--- | :--- | :--- |
-| **1** | **Horloge** | Heure grand format, date, CPU ou batterie, uptime | `12/24` · `SEC` · `UPT/DATE` · `-` |
-| **2** | **Chrono / Minuteur** | Chrono au 1/10e avec tours ou minuteur avec alerte flash | `START/PAUSE` · `TOUR/DURÉE` · `RESET` · `MODE` |
-| **3** | **Monitoring** | CPU / RAM / GPU (ou Batterie), historique, jusqu'à 64 threads, °C NVIDIA | `VUE` · `CORES` · `BAT/GPU` · `PICS` |
-| **4** | **Média & Visu** | Titre/Artiste/App (Spotify, navigateur, VLC…), seek, spectre & **4 visualiseurs plein écran** (Winamp, Oscillo, Tunnel Basses, VU-mètre L/R) | `-15s` · `+30s` · `SPECTR` · `VISU` |
-| **5** | **Réseau** | Oscilloscope Down/Up sur la carte physique active (sans double comptage VPN/WSL) + Go cumulés | `PAUSE` · `UNITÉ` · `RAZ` · `Total Go` |
-| **6** | **Serveurs & VPN** | Pings ICMP (3 hôtes), IP locale, IP publique et badge `[VPN]` auto | `IP LOC / SERV` · `-` · `-` · `PING!` |
-| **7** | **Météo** | Géo-IP hors VPN (ville de repli sous VPN) via Open-Meteo, sprites 16×16, J+6 et courbe 24h | `< JOUR` · `JOUR >` · `24H / JOURS` · `MAJ` |
-| **8** | **Demoscene & Pong** | **6 démos 1-bit `160×43`** (Hyperespace, Matrix, Plasma, Doom Fire, Torus 3D, Rotozoomer) + **Pong jouable** (20 FPS) | `< EFF` · `EFF >` · `AUTO` · `PONG` *(maintien `HAUT`/`BAS`)* |
+| **1** | **Clock** | Big clock, date, CPU or battery, uptime | `12/24` . `SEC` . `UPT/DATE` . `-` |
+| **2** | **Stopwatch / Timer** | 1/10s stopwatch with laps, or timer with flash alert | `START/PAUSE` . `TOUR/DURÉE` *(Lap/Time)* . `RESET` . `MODE` |
+| **3** | **Monitoring** | CPU / RAM / GPU (or Battery), history, up to 64 threads, NVIDIA temp | `VUE` *(View)* . `CORES` . `BAT/GPU` . `PICS` *(Peaks)* |
+| **4** | **Media & Visu** | Title/Artist/App (Spotify, browser, VLC...), seek, spectrum & **4 fullscreen visualizers** (Winamp, Oscillo, Bass Tunnel, L/R VU-meter) | `-15s` . `+30s` . `SPECTR` . `VISU` |
+| **5** | **Network** | Down/Up graph on active physical NIC (no VPN/WSL double count) + total GB | `PAUSE` . `UNITÉ` *(Unit)* . `RAZ` *(Reset)* . `Total Go` *(GB)* |
+| **6** | **Servers & VPN** | ICMP pings (3 hosts), local IP, public IP, and auto `[VPN]` tag | `IP LOC / SERV` . `-` . `-` . `PING!` |
+| **7** | **Weather** | Geo-IP off-VPN (fallback city on VPN) via Open-Meteo, 16x16 icons, 6-day & 24h curve | `< JOUR` *(Day)* . `JOUR >` . `24H / JOURS` . `MAJ` *(Update)* |
+| **8** | **Demoscene & Pong** | **6 `160x43` 1-bit demos** (Starfield, Matrix, Plasma, Doom Fire, 3D Torus, Rotozoomer) + **playable Pong** (20 FPS) | `< EFF` . `EFF >` . `AUTO` . `PONG` *(hold `HAUT`/`BAS` = Up/Down)* |
 
-*(En mode **Visu** et **Demoscene**, la barre des boutons se masque après 3 s pour libérer toute la dalle `160×43`.)*
-
----
-
-## Réseau & Confidentialité
-
-Le script n'intègre aucune télémétrie, aucun compte et n'envoie rien à son auteur. Il effectue toutefois trois types d'appels réseau automatiques en arrière-plan :
-
-* **Pings ICMP** toutes les `10 s` (`ping_interval_sec`) vers les 3 hôtes de `config.toml` (`192.168.1.1`, `1.1.1.1`, `8.8.8.8` par défaut).
-* **`https://ipwho.is/`** (repli `https://api.ipify.org`) toutes les `10 min` (`refresh_minutes`, ainsi qu'au changement d'état VPN ou via `PING!` / `MAJ`), avec l'en-tête `User-Agent: G15-HUD/0.2.0` : expose votre **IP publique** à ce service tiers pour afficher l'IP WAN (écran 6) et déterminer votre ville météo hors VPN (écran 7). *Note : cet appel reste effectué même sous VPN ou avec `auto_detect_ip = false` afin de rafraîchir l'IP publique de l'écran 6, tandis que la météo bascule alors sur la ville de repli définie dans `config.toml`.*
-* **`https://api.open-meteo.com/v1/forecast`** toutes les `10 min` avec uniquement des coordonnées latitude/longitude (issues de la géo-IP hors VPN, ou de `fallback_lat`/`fallback_lon` sous VPN ou si `auto_detect_ip = false`).
+*(In **Visu** and **Demoscene** modes, the bottom button bar hides after 3 s to use the full `160x43` screen.)*
 
 ---
 
-## Roadmap & Contributions
+## Network & Privacy
 
-Issues (notamment retours sur **G15 v1 bleu**), idées et Pull Requests sont les bienvenues :
+No telemetry, no accounts, and nothing is sent to the author. The script only makes three background network requests:
 
-- [ ] **Touches macros G1–G6, banques M1–M3/MR & LEDs** via Feature Reports HID.
-- [ ] **Bascule audio WASAPI dynamique** lors d'un changement de sortie par défaut sous Windows.
-- [ ] **Indicateur / coupe-micro universel** (`IAudioEndpointVolume`) et alertes flash inter-écrans.
-- [ ] **Traduction anglaise (EN)** de l'interface, de `config.toml` et de la doc.
-- [ ] **Découpage modulaire / portage Rust** (exécutable natif autonome).
-
-Contact direct : [dpkoss@proton.me](mailto:dpkoss@proton.me)
+* **ICMP Pings** every `10 s` (`ping_interval_sec`) to the 3 hosts in `config.toml` (`192.168.1.1`, `1.1.1.1`, `8.8.8.8` by default).
+* **`https://ipwho.is/`** (fallback `https://api.ipify.org`) every `10 min` (`refresh_minutes`, plus on VPN changes or manual `PING!` / `MAJ`), with `User-Agent: G15-HUD/0.2.0`: shares your **public IP** with that service to show your WAN IP (screen 6) and get your city when off-VPN (screen 7). *Note: this call still runs on VPN or with `auto_detect_ip = false` so screen 6 keeps your public IP up to date, while weather switches to the fallback city from `config.toml`.*
+* **`https://api.open-meteo.com/v1/forecast`** every `10 min` with latitude/longitude only (from Geo-IP off-VPN, or `fallback_lat`/`fallback_lon` on VPN or if `auto_detect_ip = false`).
 
 ---
 
-## Licence & Non-affiliation
+## Roadmap & Contributing
 
-Distribué sous licence **MIT** ([LICENSE](LICENSE)).
+Issues (especially feedback on the **blue G15 v1**), ideas, and PRs are welcome:
 
-Projet indépendant non affilié à, ni approuvé par **Logitech** ou **Microsoft** ; aucun code ni pilote propriétaire n'est inclus. *(Independent open-source project, not affiliated with or endorsed by Logitech or Microsoft; trademarks are used strictly for hardware compatibility identification.)*
+- [ ] **English (EN) translation** for the UI, System Tray menu, and `config.toml`.
+- [ ] **G1-G6 macro keys, M1-M3/MR banks & LEDs** via HID Feature Reports.
+- [ ] **Live WASAPI audio switching** when the default Windows output changes.
+- [ ] **Global mic mute indicator / toggle** (`IAudioEndpointVolume`) and cross-screen flash alerts.
+- [ ] **Modular split / Rust port** (standalone native binary).
+
+Contact: [dpkoss@proton.me](mailto:dpkoss@proton.me)
+
+---
+
+## License & Disclaimer
+
+Released under the **MIT** license ([LICENSE](LICENSE)).
+
+Independent project, not affiliated with or endorsed by **Logitech** or **Microsoft**; no proprietary code or drivers included. Trademarks belong to their respective owners and are only used to identify compatible hardware.
