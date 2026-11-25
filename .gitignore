@@ -9,6 +9,12 @@ __pycache__/
 venv/
 env/
 
+# Packaging PyInstaller
+build/
+dist/
+*.spec
+G15-Retro-HUD-*.zip
+
 # Fichiers système & éditeurs
 .vscode/
 .idea/

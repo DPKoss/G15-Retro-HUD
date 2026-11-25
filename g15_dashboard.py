@@ -13,6 +13,7 @@ import queue
 import random
 import socket
 import subprocess
+import sys
 import threading
 import time
 import tomllib
@@ -69,7 +70,11 @@ except Exception:
 VID = 0x046D
 PIDS = (0xC227, 0xC222)  # 0xC227 = G15 v2 (ambré) | 0xC222 = G15 v1 (bleu)
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = (
+    Path(sys.executable).resolve().parent
+    if getattr(sys, "frozen", False)
+    else Path(__file__).resolve().parent
+)
 KEYMAP_FILE = BASE_DIR / "g15_keymap.json"
 CONFIG_FILE = BASE_DIR / "config.toml"
 

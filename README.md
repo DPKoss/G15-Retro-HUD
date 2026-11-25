@@ -7,7 +7,7 @@
 
 **Dashboard autonome en espace utilisateur pour l'écran LCD monochrome (`160×43`) et les 5 boutons des claviers Logitech G15 (v1 & v2) sous Windows 11, sans aucun pilote propriétaire.**
 
-> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 11 x64**. Talks directly over USB Raw HID — no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI and docs are currently in French; English translation is on the roadmap.
+> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 11 x64**. Talks directly over USB Raw HID — no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) — **looking for G15 v1 (blue, `046d:c222`) testers!**
 
 [![Aperçu animé de G15-Retro-HUD (cliquer pour la démo complète sur YouTube)](assets/demo.gif)](https://youtu.be/d3aF21h4JUE)
 
@@ -28,6 +28,12 @@ En bref, comment ça tourne :
 ---
 
 ## Prérequis & Installation
+
+### Option A — Version portable Windows (sans Python)
+
+Téléchargez l'archive `G15-Retro-HUD-v0.2.0-win64.zip` depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases), décompressez-la dans un dossier de votre choix et lancez **`G15-Retro-HUD.exe`** (tourne directement dans la zone de notification Windows).
+
+### Option B — Depuis les sources (Python 3.11+)
 
 * **Windows 10 / 11 (x64)** et **Python 3.11+** (`tomllib` intégré et requis par les roues `winrt-*`).
 
