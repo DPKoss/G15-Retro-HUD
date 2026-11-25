@@ -1,13 +1,13 @@
 # G15-Retro-HUD
 
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
-![Windows 11 x64](https://img.shields.io/badge/OS-Windows%2011%20x64-0078D6?logo=windows11&logoColor=white)
+![Windows 10 / 11 x64](https://img.shields.io/badge/OS-Windows%2010%20%2F%2011%20x64-0078D6?logo=windows&logoColor=white)
 ![USB Raw HID](https://img.shields.io/badge/USB-Raw%20HID%20(Zero%20Driver)-FF8C00)
 ![License MIT](https://img.shields.io/badge/License-MIT-2ea44f)
 
-**Dashboard autonome en espace utilisateur pour l'écran LCD monochrome (`160×43`) et les 5 boutons des claviers Logitech G15 (v1 & v2) sous Windows 11, sans aucun pilote propriétaire.**
+**Dashboard autonome en espace utilisateur pour l'écran LCD monochrome (`160×43`) et les 5 boutons des claviers Logitech G15 (v1 & v2) sous Windows 10/11, sans aucun pilote propriétaire.**
 
-> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 11 x64**. Talks directly over USB Raw HID — no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) — **looking for G15 v1 (blue, `046d:c222`) testers!**
+> **English TL;DR:** User-space Python dashboard for the classic **Logitech G15 (v1 & v2)** 160×43 monochrome LCD on **Windows 10/11 x64**. Talks directly over USB Raw HID — no legacy LGS / G HUB drivers needed, keeping Windows Memory Integrity (HVCI) intact. UI & docs are currently in French (**English translation coming soon**) — **looking for G15 v1 (blue, `046d:c222`) testers!**
 
 [![Aperçu animé de G15-Retro-HUD (cliquer pour la démo complète sur YouTube)](assets/demo.gif)](https://youtu.be/d3aF21h4JUE)
 
@@ -32,6 +32,8 @@ En bref, comment ça tourne :
 ### Option A — Exécutable Windows autonome (sans Python)
 
 Téléchargez **`G15-Retro-HUD-v0.2.0-win64.exe`** depuis la page [**Releases**](https://github.com/DPKoss/G15-Retro-HUD/releases) et lancez-le directement (un seul fichier, aucune installation, tourne dans la zone de notification Windows).
+
+> **Reproductibilité :** le binaire est compilé depuis le fichier [`G15-Retro-HUD.spec`](G15-Retro-HUD.spec) public (automatisé par [GitHub Actions](.github/workflows/release.yml) à chaque tag `v*`) et peut être recompilé localement avec `.\build.ps1`. Comme tout binaire PyInstaller `--onefile` non signé, il s'extrait dans `%TEMP%` au démarrage : en cas d'alerte SmartScreen/antivirus, utilisez plutôt l'Option B ci-dessous.
 
 ### Option B — Depuis les sources (Python 3.11+)
 
